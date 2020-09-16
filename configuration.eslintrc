@@ -1,0 +1,18 @@
+{
+	"env": {
+		"browser": "true",
+		"node": "true", 
+		"es6": "true"
+	},
+	"extends": "eslint:recommended",
+	"rules": {
+		semi: ["warn", "always"],
+      		curly: 1,
+      		"no-undef": 1,
+     		"init-declarations": ["error", "always"],
+		"no-unused-vars": 1,
+		no-console: "warn",
+		no-mixed-spaces-and-tabs: "warn", 
+		no-empty: "warn"
+	}
+}

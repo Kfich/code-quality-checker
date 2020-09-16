@@ -1,0 +1,195 @@
+<html>
+	<head>
+		<title> Code Quality Report</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script>
+		$(document).ready(function(){
+			
+		    $.getJSON("static/output.json", function(result){
+
+		    	if(result.Error_Boolean == true){
+		    		$('#message').append("<p>Sorry, we don't currently support languages other than JavaScript. We also will not support Ionic, Appcelerator, Cordova, WordPress, Sencha, and Xamarin</p>")
+		    	}
+
+		    	else{
+			    	if (result.final_score < 50){
+			    		$('#message').append("<p> Unacceptable code quality, don't release. </p>")
+			    	}
+			    	else if (result.final_score < 75){
+			    		$('#message').append("<p> Code requires attention, see below for specifics. </p>")
+			    	}
+
+			    	else if (result.final_score >=75){
+			    		$('#message').append("<p> Acceptable code quality. Ready to deploy. </p>")
+			    	}
+
+			    	$('#message').append("<p> See definitions sections below for more details. </p>")
+			    	$("#raw_score").append("<h1> " + result.final_score + "/100</h1>" )
+
+			 
+			    	$.each(result.deductions, function(i, field){
+			    		if (field != 0){
+			        		$("#deductions").append("<li> - " + field + " for " + i + "</li>" )
+			        	}
+			        });
+
+
+			    	for (i = 0; i < result.mods_to_update.length; i++){
+				    	$.each(result.mods_to_update[i], function(i, field){
+				        	$("#mod_update").append("<li>" + i + "</li>" )
+				        });
+			    	}
+
+			    	$.each(result.unused_mods, function(i, field){
+			        	$("#mod_unused").append("<li>" + field + "</li>" )
+			        });
+
+			    	for (i = 0; i < result.file_errors.length; i++){
+				    	$.each(result.file_errors[i], function(i, field){
+				        	$("#errors").append("<li>" + i + " E : " + field["Errors"] + "</li>" )
+				        	$("#errors").append("<li>" + i + " W : " + field['Warnings'] + "</li>  <br />" )
+				        });
+			    	}
+
+		
+
+			    	$("#summary").append("<li> Errors: " + result.error_percentage + "&#37; </li>" )
+			    	$("#summary").append("<li> Comments: " + result.comment_density + "&#37; </li>" )
+			    	j = 0;
+			        $.each(result.language_data.JavaScript, function(i, field){
+			        	if (j ==0){
+							$("#summary").append("<li> &#35; of Files" + ": " + field + "</li>" )
+			        	}
+			        	if (j == 1){
+			        		$("#summary").append("<li> &#35; of Blanks" + ": " + field + "</li>" )
+			        	}
+			        	if (j == 2){
+			        		$("#summary").append("<li> &#35; of Comments" + ": " + field + "</li>" )
+			        	}
+			        	if (j == 3){
+			        		$("#summary").append("<li> Lines of Code" + ": " + field + "</li>" )
+			        	}
+			        	j++;
+			        });
+			        
+
+			        k = 0
+			        $.each(result.readme, function(i, field){
+			        	if (k != 2 && k != 4 && k != 6 && k != 7){
+			        		$("#readme").append("<li>" + i + ": " + field + "</li>" )
+			      	  	}
+			      	  	if (k == 7){
+			      	  		$("#readme").append("<li>" + i + ": " + field + "/16 </li>" )
+			      	  	}
+			        	k++;
+			        });
+			    }
+			});
+		});
+
+		</script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+
+
+		<style>
+			th {
+				width:20%;
+			}
+			td {
+				border-left: 1px solid black;
+			}
+			#deductions {
+				color: red ;
+				font-weight: bold; 
+			}
+			#my_table {
+				border: 1px solid black;
+				width: 100%;
+				height: 500px;
+
+			}
+			#my_table div {
+				height: 100%;
+				border-left: 1px solid black;
+				overflow-y: scroll;
+			}
+			.table_title {
+				font-weight: bold;
+				font-size: 16px;
+				text-align: center;
+				border-bottom: 1px dashed black;
+			}
+	
+
+		</style>
+
+	</head>
+
+	<body>
+		<div class="container">
+			<h1> Code Quality Report </h1>
+			<div class="row" id="report">
+				<div class="col-md-7" id='message'> <br /> </div>
+				<div class="col-md-3" id="deductions"> <br /> </div>
+				<div class="col-md-2" id="raw_score"> </div>
+			</div>
+			<br />
+
+			<div class="row" id="my_table">
+				<div class ="col-md-2" id='mod_update'>
+					<p class="table_title"> Libs To Update</p>
+					<br />
+				</div>
+
+				<div class="col-md-2" id='mod_unused'>
+					<p class="table_title"> Unused Libs</p>
+					<br />
+				</div>
+
+				<div class ="col-md-2" id='errors'>
+					<p class="table_title"> Errors &amp; Warnings</p>
+					<br />
+				</div>
+
+				<div class ="col-md-2" id='summary'>
+					<p class="table_title"> Summary</p>
+					<br />
+				</div>
+
+				<div class ="col-md-4" id='readme'>
+					<p class="table_title"> Documentation Details</p>
+					<br />
+				</div>
+
+			</div> <!-- my_table -->
+
+			<br />
+			<div>
+				<h2> Definitions </h2>
+				<p> <strong> Libs To Update </strong> - List of libraries that have been downloaded that can now be updated. </p>
+				<p> <strong> Unused Libs </strong> - List of libraries that have been downloaded, but aren't being used in project. </p>
+				<p> <strong> Errors &amp; Warnings </strong> - List of all checked files and the number of errors and warnings found in each.</p>
+				<p> <strong> Summary </strong> - Details of all files, including the percent of errors found per line of code, percent of comments per line of code, number of total files, number of total lines of code, and total number of blank lines.  </p>
+				<p> <strong> Documentation Details </strong> - Github documentation (Readme) is checked for organization, clarity, length, and images. Based on this information the documentation is scored. </p>
+
+				<ul>
+					<li> <strong> Organization </strong> - Is based off the number of sections the documentation is broken into.</li>
+					<li> <strong> Clarity </strong> -  Is based on the number of common keywords and phrases in the documentation, such as "Installation" and "Getting Started". </li>
+					<li> <strong> Images </strong> - Points are rewarded for having pictures in the documentation. </li>
+					<li> <strong> Documentation Length </strong> - Number of lines in documentation. </li>
+					<li> <strong> Documentation Score </strong> - The above 4 categories give a maximum of 4 points each. Any documentation score over 6 is satisfactory </li>
+				</ul>
+
+			</div>
+
+			<br />
+			<br />
+			<br />
+
+		</div>
+	</body>
+</html>
+
+
+

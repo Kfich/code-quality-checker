@@ -1,0 +1,20 @@
+{
+  "name": "package",
+  "version": "1.0.0",
+  "description": "## Getting Started  1 Install ESLint",
+  "main": "script_runner.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "depcheck": "^0.6.8",
+    "eslint": "^4.13.1",
+    "npm-check-updates": "^2.13.0"
+  },
+  "devDependencies": {
+    "fs": "0.0.1-security",
+    "shelljs": "^0.7.8"
+  }
+}
